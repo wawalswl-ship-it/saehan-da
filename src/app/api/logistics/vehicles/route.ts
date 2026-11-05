@@ -1,8 +1,10 @@
+import { getSession } from "@/lib/session";
 import { apiFail, apiOk, filtersFromRequest, pageParams } from "@/lib/api-response";
 import { getVehicleStats } from "@/lib/logistics-queries";
 
 // GET /api/logistics/vehicles?page=&pageSize= + 공통 필터
 export async function GET(request: Request) {
+  if (!(await getSession())) return apiFail("로그인이 필요합니다.", 401);
   const { filters, searchParams } = filtersFromRequest(request);
   const { page, pageSize, offset } = pageParams(searchParams, 10, 1000);
   try {

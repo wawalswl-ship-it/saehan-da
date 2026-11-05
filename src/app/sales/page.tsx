@@ -17,6 +17,7 @@ import {
   getVolumeShare,
   type ReturnRow,
 } from "@/lib/sales-queries";
+import { requireSession } from "@/lib/session";
 import type { TableData } from "@/lib/table-data";
 
 export const metadata: Metadata = { title: "판매" };
@@ -68,6 +69,7 @@ function returnItems(rows: ReturnRow[]) {
 }
 
 async function SalesContent({ searchParams }: PageProps) {
+  await requireSession();
   const f = parseFilters(await searchParams);
   const prevF = prevYearFilters(f);
   const [monthly, prevMonthly, pareto, volume, customerMonth, returnProducts, returnCustomers] = await Promise.all([

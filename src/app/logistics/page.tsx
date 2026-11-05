@@ -10,6 +10,7 @@ import { ComboChart } from "@/components/charts/combo-chart";
 import { filtersToQuery, parseFilters, periodLabel, type RawSearchParams } from "@/lib/filters";
 import { SERIES_COLORS, WEEKDAY_LABELS, formatFullNumber, formatNumber, formatPct, ratioPct } from "@/lib/format";
 import { getPackUnitShare, getShipmentSeries, getVehicleStats, getWeekdayStats } from "@/lib/logistics-queries";
+import { requireSession } from "@/lib/session";
 import type { TableColumn, TableData } from "@/lib/table-data";
 
 export const metadata: Metadata = { title: "물류" };
@@ -39,6 +40,7 @@ export default function LogisticsPage({ searchParams }: PageProps) {
 }
 
 async function LogisticsContent({ searchParams }: PageProps) {
+  await requireSession();
   const f = parseFilters(await searchParams);
   const [series, weekdays, topVehicles, packUnits] = await Promise.all([
     getShipmentSeries(f),

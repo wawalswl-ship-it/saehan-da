@@ -1,8 +1,10 @@
+import { getSession } from "@/lib/session";
 import { NextRequest } from "next/server";
 import { apiFail, apiOk } from "@/lib/api-response";
 import { getDimensionValues } from "@/lib/analysis-queries";
 
 export async function GET(request: NextRequest) {
+  if (!(await getSession())) return apiFail("로그인이 필요합니다.", 401);
   const { searchParams } = new URL(request.url);
   const dataset = searchParams.get("dataset");
   const dimension = searchParams.get("dimension");

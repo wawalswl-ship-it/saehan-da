@@ -12,6 +12,7 @@ import { PlanningItems } from "@/components/planning/planning-items";
 import { filtersToQuery, parseFilters, type RawSearchParams } from "@/lib/filters";
 import { SERIES_COLORS, formatFullNumber, formatNumber } from "@/lib/format";
 import { FORECAST_MONTHS, getPlanningData } from "@/lib/planning-queries";
+import { requireSession } from "@/lib/session";
 import type { TableData } from "@/lib/table-data";
 
 export const metadata: Metadata = { title: "생산계획 지원" };
@@ -47,6 +48,7 @@ function EstimateNotice({ children }: { children: React.ReactNode }) {
 }
 
 async function PlanningContent({ searchParams }: PageProps) {
+  await requireSession();
   const f = parseFilters(await searchParams);
   const data = await getPlanningData(f);
   const filterQuery = filtersToQuery(f);

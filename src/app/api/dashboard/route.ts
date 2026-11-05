@@ -1,3 +1,4 @@
+import { getSession } from "@/lib/session";
 import { apiFail, apiOk } from "@/lib/api-response";
 import {
   getYearlyProduction,
@@ -11,6 +12,7 @@ import {
 } from "@/lib/queries";
 
 export async function GET(request: Request) {
+  if (!(await getSession())) return apiFail("로그인이 필요합니다.", 401);
   const { searchParams } = new URL(request.url);
   const year = parseInt(searchParams.get("year") ?? "2025", 10);
 

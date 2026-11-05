@@ -1,3 +1,4 @@
+import { getSession } from "@/lib/session";
 import { apiFail, apiOk } from "@/lib/api-response";
 import { getFilterOptions, type FilterOptionKind } from "@/lib/filter-option-queries";
 
@@ -5,6 +6,7 @@ const KINDS: FilterOptionKind[] = ["customer", "productType", "packUnit"];
 
 // GET /api/filters/options?kind=customer|productType|packUnit
 export async function GET(request: Request) {
+  if (!(await getSession())) return apiFail("로그인이 필요합니다.", 401);
   const kind = new URL(request.url).searchParams.get("kind") as FilterOptionKind | null;
   if (!kind || !KINDS.includes(kind)) return apiFail("kind 는 customer, productType, packUnit 중 하나여야 합니다.", 400);
   try {

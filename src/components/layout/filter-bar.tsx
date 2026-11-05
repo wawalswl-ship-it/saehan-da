@@ -106,6 +106,8 @@ export function FilterBar() {
     }
   }
 
+  if (pathname === "/login") return null;
+
   return (
     <section aria-label="공통 필터" className="border-b border-border bg-white">
       <div

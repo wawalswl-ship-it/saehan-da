@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Menu, X } from "lucide-react";
@@ -34,8 +34,9 @@ function useFilterQuery(): string {
   return qs ? `?${qs}` : "";
 }
 
-export function SiteHeader() {
+export function SiteHeader({ userSlot }: { userSlot?: ReactNode }) {
   const pathname = usePathname();
+  const isLogin = pathname === "/login";
   const query = useFilterQuery();
   const [open, setOpen] = useState(false);
 
@@ -55,6 +56,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 bg-brand-navy text-white">
       <div className="mx-auto flex h-14 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
+        {!isLogin && (
         <button
           type="button"
           className="-ml-2 inline-flex size-10 items-center justify-center rounded-md hover:bg-white/10 lg:hidden"
@@ -65,8 +67,9 @@ export function SiteHeader() {
         >
           <Menu className="size-5" aria-hidden />
         </button>
+        )}
 
-        <Link href={`/${query}`} className="flex shrink-0 items-baseline gap-2">
+        <Link href={isLogin ? "/login" : `/${query}`} className="flex shrink-0 items-baseline gap-2">
           <span className="text-base font-bold tracking-tight">새한프라텍</span>
           <span className="hidden text-[11px] font-medium tracking-wide text-white/70 sm:inline">
             One-Stop Packaging Partner
@@ -74,7 +77,7 @@ export function SiteHeader() {
         </Link>
 
         <nav aria-label="주 메뉴" className="ml-4 hidden h-full items-stretch gap-1 lg:flex">
-          {NAV_LINKS.map((link) => {
+          {(isLogin ? [] : NAV_LINKS).map((link) => {
             const active = isActive(pathname, link.href);
             return (
               <Link
@@ -92,6 +95,8 @@ export function SiteHeader() {
             );
           })}
         </nav>
+
+        <div className="ml-auto">{userSlot}</div>
       </div>
 
       {/* 모바일 드로어 */}

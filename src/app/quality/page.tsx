@@ -17,6 +17,7 @@ import {
 } from "@/lib/filters";
 import { DEPT_COLORS, DEPT_NAMES, SERIES_COLORS, formatPct, ratioPct } from "@/lib/format";
 import { getDefectMonthly } from "@/lib/quality-queries";
+import { requireSession } from "@/lib/session";
 import type { TableData } from "@/lib/table-data";
 
 export const metadata: Metadata = { title: "품질" };
@@ -47,6 +48,7 @@ function inPeriod(ym: string, f: Filters): boolean {
 }
 
 async function QualityContent({ searchParams }: PageProps) {
+  await requireSession();
   const f = parseFilters(await searchParams);
   const rows = await getDefectMonthly(f);
   const period = periodLabel(f);

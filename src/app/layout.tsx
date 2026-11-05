@@ -5,11 +5,12 @@ import "./globals.css";
 import { SiteHeader } from "@/components/layout/site-header";
 import { FilterBar, FilterBarFallback } from "@/components/layout/filter-bar";
 import { SiteFooter } from "@/components/layout/site-footer";
+import { UserMenu } from "@/components/layout/user-menu";
 
 export const metadata: Metadata = {
   title: {
-    default: "새한프라텍 생산·판매 인텔리전스",
-    template: "%s | 새한프라텍 생산·판매 인텔리전스",
+    default: "새한프라텍 생산·판매 분석",
+    template: "%s | 새한프라텍 생산·판매 분석",
   },
   description: "새한프라텍 생산·판매 실적(2021–2025) 분석 대시보드",
 };
@@ -36,7 +37,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
         {/* URL 쿼리를 읽는 클라이언트 컴포넌트는 Suspense 안에서 렌더링 */}
         <Suspense fallback={<HeaderFallback />}>
-          <SiteHeader />
+          <SiteHeader
+            userSlot={
+              <Suspense fallback={null}>
+                <UserMenu />
+              </Suspense>
+            }
+          />
         </Suspense>
         <Suspense fallback={<FilterBarFallback />}>
           <FilterBar />

@@ -1,3 +1,4 @@
+import { getSession } from "@/lib/session";
 import { NextRequest } from "next/server";
 import { apiFail, apiOk } from "@/lib/api-response";
 import {
@@ -9,6 +10,7 @@ import {
 } from "@/lib/analysis-queries";
 
 export async function POST(request: NextRequest) {
+  if (!(await getSession())) return apiFail("로그인이 필요합니다.", 401);
   try {
     const body = await request.json();
     const { dataset, rows, columns, measures, filters, globalQuery } = body;
@@ -38,6 +40,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
+  if (!(await getSession())) return apiFail("로그인이 필요합니다.", 401);
   const describe = (obj: Record<string, { label: string }>) =>
     Object.entries(obj).map(([key, v]) => ({ key, label: v.label }));
   return apiOk({

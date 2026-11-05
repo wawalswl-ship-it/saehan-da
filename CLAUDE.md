@@ -63,12 +63,18 @@ saehane-da/
 - 생산실적 3개 부서만 포함, 판매실적에는 캡/라벨 등 부자재 포함 → 직접 수량 비교 불가
 - 1212 PE팀은 2024년 7월 이후 급감, 2024년 10~12월 실적 없음 (축소/이관)
 
-## 대시보드 구성 (생산·판매 인텔리전스)
+## 대시보드 구성 (생산·판매 분석)
 - 페이지: `/` 종합 현황, `/production` 생산, `/sales` 판매, `/quality` 품질, `/planning` 생산계획 지원(수요 예측·재고 추정·상관 분석 탭), `/logistics` 물류, `/analysis` 자유 분석, `/correlation`(기존 경로 유지)
 - 공통 필터는 URL 쿼리스트링에만 저장: `year`(기본 2025, `all`=전체) `q` `m` `dept` `slip` `cust` `type` `pack` — 정의는 `src/lib/filters.ts`
 - 조회는 서버 컴포넌트에서 `src/lib/*-queries.ts` 의 집계 함수(`'use cache'`)를 직접 호출하고, 차트만 클라이언트 컴포넌트
 - SQL 값은 `src/lib/sql.ts` 의 `Q` 로 항상 `$n` 파라미터 바인딩
 - 공용 UI: `src/components/kit`(차트 카드·KPI·표·스켈레톤), `src/components/charts`(콤보 차트·막대 목록·히트맵), `src/components/layout`(헤더·필터 바·푸터)
+
+## 로그인
+- 모든 페이지·API는 로그인 필요. `src/proxy.ts` 가 세션 쿠키를 확인해 페이지는 `/login` 으로 보내고 API는 401 응답
+- 페이지 콘텐츠와 API 핸들러에서도 `requireSession()` / `getSession()` 으로 한 번 더 확인 (`src/lib/session.ts`)
+- 계정은 환경변수 `AUTH_USERS` (공용 DB에 쓰지 않으므로 사용자 테이블 없음), 세션은 `AUTH_SECRET` 으로 서명한 HttpOnly 쿠키(7일)
+- 두 환경변수가 없으면 아무도 로그인할 수 없다(차단이 기본)
 
 ## 데이터 규칙
 - 생산량 = `SUM(qty_grade_a)`, 불량률 = C급 ÷ (A급 + C급). 기본 전표구분은 21(본가공입고), 22·32는 필터로 포함
@@ -92,6 +98,8 @@ npm run etl          # 데이터 적재 스크립트
 ## 환경변수
 ```
 DATABASE_URL=<Vercel 환경변수에 설정>
+AUTH_USERS=<아이디:비밀번호 를 쉼표로 구분, Vercel 환경변수에 설정>
+AUTH_SECRET=<세션 서명용 임의 문자열 16자 이상, Vercel 환경변수에 설정>
 ```
 
 ## 주의사항

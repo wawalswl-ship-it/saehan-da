@@ -18,6 +18,7 @@ import {
   ratioPct,
 } from "@/lib/format";
 import { getDeptMonthly, getMachineMonth, getShiftStats, getSlipComposition } from "@/lib/production-queries";
+import { requireSession } from "@/lib/session";
 import type { TableData } from "@/lib/table-data";
 
 export const metadata: Metadata = { title: "생산" };
@@ -39,6 +40,7 @@ export default function ProductionPage({ searchParams }: PageProps) {
 }
 
 async function ProductionContent({ searchParams }: PageProps) {
+  await requireSession();
   const f = parseFilters(await searchParams);
   const [deptMonthly, machineMonth, shifts, slips] = await Promise.all([
     getDeptMonthly(f),
